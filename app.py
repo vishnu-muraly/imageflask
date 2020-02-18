@@ -1,11 +1,37 @@
 #Test application working fine
 
-from load import *
+#from load import *
 from flask import Flask, render_template, request
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 from scipy.misc import imsave, imread, imresize
 from keras.preprocessing import image
 from keras.applications.resnet50 import preprocess_input, decode_predictions
+
+import numpy as np
+import keras.models
+from keras.models import model_from_json
+from scipy.misc import imread, imresize,imshow
+import tensorflow as tf
+
+
+
+json_file = open('model.json','r')
+loaded_model_json = json_file.read()
+json_file.close()
+model = model_from_json(loaded_model_json)
+#load woeights into new model
+model.load_weights("model.h5")
+print("Loaded Model from disk")
+
+#compile and evaluate loaded model
+model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+#loss,accuracy = model.evaluate(X_test,y_test)
+#print('loss:', loss)
+#print('accuracy:', accuracy)
+graph = tf.get_default_graph()
+
+#return loaded_model,graph
+
 
 # for matrix math
 import numpy as np
@@ -19,13 +45,13 @@ import sys
 # for reading operating system data
 import os
 # tell our app where our saved model is
-sys.path.append(os.path.abspath("./model"))
+#sys.path.append(os.path.abspath("./model"))
 # initalize our flask app
 app = Flask(__name__)
 # global vars for easy reusability
 global model, graph
 # initialize these variables
-model, graph = init()
+#model, graph = init()
 
 photos = UploadSet('photos', IMAGES)
 
